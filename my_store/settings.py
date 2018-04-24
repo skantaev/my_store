@@ -103,6 +103,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Authorization
+AUTH_USER_MODEL = 'my_store_auth_app.CustomUser'
+LOGIN_URL = '/auth/login'
+LOGIN_REDIRECT_URL = '/pizza/create'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
