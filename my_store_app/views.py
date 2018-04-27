@@ -12,6 +12,10 @@ def index(request):
         context = {'categories': categories,
                    'products': products,
                    }
-        return render(request, '', context)
+        return render(request, 'my_store_app/index.html', context)
 
     return HttpResponse(status=405)
+
+
+def view_category(request, category_id):
+    pass

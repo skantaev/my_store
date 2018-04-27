@@ -1,33 +1,62 @@
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
+from my_store_auth_app import models as auth_models
 
 # Create your models here.
 
 
-class Product(models.Model):
+class Category(models.Model):
     name = models.CharField(max_length=150)
+    slug = models.SlugField(max_length=100, unique=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
+
+    def __str__(self):
+        return self.name
+
+
+class Product(models.Model):
+    name = models.CharField(max_length=150, verbose_name='Название')
+    slug = models.SlugField(max_length=100, unique=True)
+    category = models.ManyToManyField(Category,
+                                      blank=True,
+                                      null=True,
+                                      related_name='category',
+                                      verbose_name='Категория',
+                                      )
     description = models.TextField(max_length=3000, blank=True)
-    image = models.ImageField(upload_to='products/%Y/%m/%d/', blank=True)
+    image = models.ImageField(upload_to='products/%Y/%m/%d/', null=True, blank=True, verbose_name='Изображение')
     price = models.DecimalField(max_digits=9, decimal_places=2)
     stock = models.PositiveIntegerField()
     available = models.BooleanField(default=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
+    number_of_reviews = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name
 
 
-class Category(models.Model):
-    name = models.CharField(max_length=150)
-    goods = models.ManyToManyField(Product, blank=True, related_name='goods')
+class Review(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET(auth_models.get_user_model))
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100, verbose_name='Заголовок')
+    text = models.CharField(max_length=3000, verbose_name='Текст')
+    visible = models.BooleanField(default=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.name
+
+def get_sentinel_product():
+    return Product.objects.get_or_create(name='deleted')
 
 
 class OrderItem(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.S)
     quantity = models.PositiveIntegerField()
 
 

@@ -4,11 +4,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %}</title>
 
     <link rel="stylesheet" href="{% static 'my_store_app/styles.css' %}">
 </head>
 <body>
+    <div class="content">
+        <a href="{% url 'index' %}"><h1 align="center">Интернет-магазин</h1></a>
+        <nav>
+            {% block nav %}{% endblock %}
+        </nav>
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
 
 </body>
 </html>
