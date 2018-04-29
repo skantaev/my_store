@@ -1,14 +1,13 @@
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
-from my_store_auth_app import models as auth_models
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 
 
 class Category(models.Model):
     name = models.CharField(max_length=150)
-    slug = models.SlugField(max_length=100, unique=True)
 
     class Meta:
         ordering = ['name']
@@ -21,7 +20,6 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=150, verbose_name='Название')
-    slug = models.SlugField(max_length=100, unique=True)
     category = models.ManyToManyField(Category,
                                       blank=True,
                                       null=True,
@@ -30,7 +28,7 @@ class Product(models.Model):
                                       )
     description = models.TextField(max_length=3000, blank=True)
     image = models.ImageField(upload_to='products/%Y/%m/%d/', null=True, blank=True, verbose_name='Изображение')
-    price = models.DecimalField(max_digits=9, decimal_places=2)
+    price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name="Цена")
     stock = models.PositiveIntegerField()
     available = models.BooleanField(default=True)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -41,8 +39,24 @@ class Product(models.Model):
         return self.name
 
 
+def get_sentinel_product():
+    """
+    Возвращает объект класса Product (или создает и возвращает, если его нет) для замещения удаленных объектов этого
+    класса.
+    """
+    return Product.objects.get_or_create(name='deleted')[0]
+
+
+def get_sentinel_user():
+    """
+    Возвращает объект класса CustomUser (или создает и возвращает, если его нет) для замещения удаленных объектов этого
+    класса.
+    """
+    return get_user_model().objects.get_or_create(username='deleted')[0]
+
+
 class Review(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET(auth_models.get_user_model))
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET(get_sentinel_user))
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, verbose_name='Заголовок')
     text = models.CharField(max_length=3000, verbose_name='Текст')
@@ -51,12 +65,8 @@ class Review(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
 
 
-def get_sentinel_product():
-    return Product.objects.get_or_create(name='deleted')
-
-
 class OrderItem(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.S)
+    product = models.ForeignKey(Product, on_delete=models.SET(get_sentinel_product))
     quantity = models.PositiveIntegerField()
 
 

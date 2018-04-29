@@ -1,15 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from my_store_app.models import Order
 
 
 # Create your models here.
-
-
-def get_sentinel_user():
-    return get_user_model().objects.get_or_create(username='deleted')[0]
 
 
 class CustomUser(AbstractUser):
