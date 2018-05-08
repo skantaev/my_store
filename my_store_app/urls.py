@@ -7,4 +7,3 @@ urlpatterns = [
     path('category/<int:category_id>', view_category, name='category'),
     path('product/<int:product_id>', view_product, name='product'),
 ]
-

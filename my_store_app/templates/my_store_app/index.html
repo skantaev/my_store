@@ -1,7 +1,28 @@
 {% extends 'my_store_app/_base.html' %}
+{% load staticfiles %}
 
 {% block title %}Интернет-магазин{% endblock %}
 
 {% block nav %}
     {% for category in categories %}
-        <div><a href="{% url '' " </div>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ category.get_absolute_url }}">{{ category.name }}</a>
+        </li>
+
+    {% endfor %}
+{% endblock %}
+
+{% block products %}
+    {% for product in products %}
+        <div class="card">
+            <a href="{{ product.get_absolute_url }}">
+                <img class="card-img-top" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-image.jpg" %}{% endif %}" alt="product image">
+            </a>
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.price }} руб.</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

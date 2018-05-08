@@ -1,23 +1,41 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{% endblock %}</title>
-
-    <link rel="stylesheet" href="{% static 'my_store_app/styles.css' %}">
+    <title>{% block title %}Title{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <div class="content">
-        <a href="{% url 'index' %}"><h1 align="center">Интернет-магазин</h1></a>
-        <nav>
-            {% block nav %}{% endblock %}
-        </nav>
-        <main>
-            {% block content %}{% endblock %}
-        </main>
+    <div class="jumbotron text-center" style="margin-bottom:0">
+        <h1>Интернет-магазин</h1>
+    </div>
+
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <a class="navbar-brand" href="{% url 'index' %}">Категории</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                {% block nav %}Categories here{% endblock %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="d-flex flex-row">
+            {% block products %}Products here{% endblock %}
+        </div>
+    </div>
+
+    <div class="jumbotron text-center" style="margin-bottom:0">
+        <p>Footer</p>
     </div>
 
 </body>
