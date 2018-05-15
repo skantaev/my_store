@@ -1,0 +1,23 @@
+{% extends 'my_store_app/_base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    {{ product.name }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-4">
+                <img class="img-fluid" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "images/no-image.png" %}{% endif %}" alt="product image">
+            </div>
+            <div class="col-sm-8">
+                <h1> {{ product.name }} </h1>
+                <p> {{product.price }} руб.</p>
+                <span>
+                    {{ product.description | linebreaks }}
+                </span>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,28 +1,54 @@
 {% extends 'my_store_app/_base.html' %}
 {% load staticfiles %}
 
-{% block title %}Интернет-магазин{% endblock %}
-
-{% block nav %}
-    {% for category in categories %}
-
-        <li class="nav-item">
-            <a class="nav-link" href="{{ category.get_absolute_url }}">{{ category.name }}</a>
-        </li>
-
-    {% endfor %}
+{% block title %}
+    {% if category %}
+        {{ category.name }}
+    {% else %}
+        Все товары
+    {% endif %}
 {% endblock %}
 
-{% block products %}
-    {% for product in products %}
-        <div class="card">
-            <a href="{{ product.get_absolute_url }}">
-                <img class="card-img-top" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no-image.jpg" %}{% endif %}" alt="product image">
-            </a>
-            <div class="card-body">
-                <h5 class="card-title">{{ product.name }}</h5>
-                <p class="card-text">{{ product.price }} руб.</p>
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar for categories-->
+            <div class="col-sm-2">
+                <h3 align="center">Категории</h3>
+                <ul class="sidebar">
+                    <li {% if not category %} class="selected" {% endif %}>
+                        <a href="{% url 'store:index' %}">Все</a>
+                    </li>
+                    {% for ctg in categories %}
+                        <li {% if ctg.pk == category.pk %} class="selected" {% endif %}>
+                            <a href="{{ ctg.get_absolute_url }}">{{ ctg.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+            <!-- Products -->
+            <div class="col-sm-10">
+                <div class="d-flex flex-wrap">
+                    {% for product in products %}
+                    <div class="product-box">
+                        <a href="{{ product.get_absolute_url }}">
+                            <div class="image-box">
+                                <img class="product-image" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "images/no-image.png" %}{% endif %}" alt="product image">
+                            </div>
+                        </a>
+                        <div class="product-box-body">
+                            <div class="text-box">
+                                <p>{{ product.name }}</p>
+                            </div>
+                            <div class="price-box">
+                                <p>{{ product.price }} руб.</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
-    {% endfor %}
+    </div>
 {% endblock %}

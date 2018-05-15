@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 # Create your models here.
 
@@ -17,26 +18,37 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('store:category', args=[self.pk])
+
 
 class Product(models.Model):
     name = models.CharField(max_length=150, verbose_name='Название')
     category = models.ManyToManyField(Category,
                                       blank=True,
-                                      null=True,
                                       related_name='category',
                                       verbose_name='Категория',
                                       )
     description = models.TextField(max_length=3000, blank=True)
-    image = models.ImageField(upload_to='products/%Y/%m/%d/', null=True, blank=True, verbose_name='Изображение')
+    image = models.ImageField(upload_to='my_store_app/images/products/%Y/%m/%d/', null=True, blank=True,
+                              verbose_name='Изображение')
     price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name="Цена")
     stock = models.PositiveIntegerField()
-    available = models.BooleanField(default=True)
+    available = models.BooleanField(default=True, verbose_name='Доступен')
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     number_of_reviews = models.PositiveIntegerField(default=0)
 
+    class Meta:
+        ordering = ['-date_updated']
+        verbose_name = 'Товар'
+        verbose_name_plural = 'Товары'
+
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('store:product', args=[self.pk])
 
 
 def get_sentinel_product():

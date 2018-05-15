@@ -24,6 +24,7 @@ def view_category(request, category_id):
         products = Product.objects.filter(available=True, category=category)
         context = {'categories': categories,
                    'products': products,
+                   'category': category,
                    }
         return render(request, 'my_store_app/index.html', context)
 

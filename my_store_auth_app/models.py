@@ -8,7 +8,7 @@ from my_store_app.models import Order
 
 
 class CustomUser(AbstractUser):
-    address = models.CharField(max_length=150, blank=True)
+    address = models.CharField(max_length=150, blank=True, null=True)
     phone_regex = RegexValidator(regex=r'^(?:(?:\+7)|8)\d{10}$', message="Номер должен быть в формате \"+7ХХХХХХХХХХ\" "
                                                                          "или \"8ХХХХХХХХХХ\"")
     phone_number = models.CharField(validators=[phone_regex], max_length=15, blank=True)

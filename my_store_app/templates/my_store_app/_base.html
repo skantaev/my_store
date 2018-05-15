@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Title{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'my_store_app/styles.css' %}">
+    <!-- Bootstrap links -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
@@ -13,26 +15,26 @@
 </head>
 <body>
     <div class="jumbotron text-center" style="margin-bottom:0">
-        <h1>Интернет-магазин</h1>
+        <h1>Мой интернет-магазин</h1>
     </div>
 
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-        <a class="navbar-brand" href="{% url 'index' %}">Категории</a>
+        <a class="navbar-brand" href="{% url 'store:index' %}">Test</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav">
-                {% block nav %}Categories here{% endblock %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
             </ul>
         </div>
     </nav>
 
-    <div class="container">
-        <div class="d-flex flex-row">
-            {% block products %}Products here{% endblock %}
-        </div>
-    </div>
+    {% block content %}
+        Content
+    {% endblock %}
 
     <div class="jumbotron text-center" style="margin-bottom:0">
         <p>Footer</p>
