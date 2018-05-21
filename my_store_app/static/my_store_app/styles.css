@@ -66,3 +66,9 @@ li a:hover {
     vertical-align: bottom;
     text-align: center;
 }
+
+.navbar-toggler {
+    width: 100%;
+    float: none;
+    margin-right: 0;
+}
