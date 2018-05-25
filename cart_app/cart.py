@@ -1,7 +1,10 @@
-from django.core.exceptions import ValidationError
 from my_store import settings
 from decimal import Decimal
-from django import template
+from my_store_app.models import Product
+
+
+class ItemDoesNotExist(Exception):
+    pass
 
 
 class Cart(object):
@@ -15,13 +18,19 @@ class Cart(object):
         self._cart = cart
 
     def __iter__(self):
-        return self._cart
+        products_ids = self._cart.keys()
+        products = Product.objects.filter(id__in=products_ids)
+        for product in products:
+            self._cart[str(product.pk)]['product'] = product
+
+        for item in self._cart.values():
+            yield item
 
     def __len__(self):
         """
         Возвращает количество товаров в корзине как длину словаря cart.
         """
-        return len(self._cart)
+        return sum(item['quantity'] for item in self._cart.values())
 
     def __save(self):
         self.session[settings.CART_SESSION_ID] = self._cart
@@ -29,21 +38,23 @@ class Cart(object):
 
     def add(self, product):
         """
-        Добавление товара в корзину. Ключу словаря cart в виде первичного ключа товара соответсвует число товаров в
+        Добавление товара в корзину. Ключу словаря cart в виде первичного ключа товара соответствует число товаров в
         корзине (при добавлении оно автоматически равно 1).
         """
-        if product.pk not in self._cart:
-            self._cart[product.pk] = {'quantity': 1, 'product': product}
+        product_id = str(product.pk)
+        if product_id not in self._cart:
+            self._cart[product_id] = {'quantity': 1, 'price': str(product.price)}
         else:
-            raise ValidationError('Product is already in the cart!')
+            self._cart[product_id]['quantity'] += 1
 
         self.__save()
 
     def remove(self, product):
-        if product.pk in self._cart:
-            del self._cart[product.pk]
+        product_id = str(product.pk)
+        if product_id in self._cart:
+            del self._cart[product_id]
         else:
-            raise ValidationError('Product is not in the cart!')
+            raise ItemDoesNotExist
 
         self.__save()
 
@@ -51,25 +62,25 @@ class Cart(object):
         """
         Изменение количества выбранного товара в корзине.
         """
+        product_id = str(product.pk)
         if product.pk in self._cart:
-            self._cart[product.pk]['quantity'] = quantity
+            self._cart[product_id]['quantity'] = quantity
         else:
-            raise ValidationError('Product is not in the cart!')
+            raise ItemDoesNotExist
 
         self.__save()
 
     def get_total_price(self):
         total_price = 0
 
-        for product_pk in self._cart:
-            total_price += self._cart[product_pk]['quantity'] * Decimal(self._cart[product_pk]['product'].price)
+        for product_id in self._cart:
+            total_price += self._cart[product_id]['quantity'] * Decimal(self._cart[product_id]['price'])
 
         return total_price
 
-
-register = template.Library()
-
-
-@register.simple_tag
-def multiply(value, arg):
-    return Decimal(value) * arg
+    def clear(self):
+        """
+        Метод для очистки корзины.
+        """
+        del self.session[settings.CART_SESSION_ID]
+        self.session.modified = True

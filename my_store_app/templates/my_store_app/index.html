@@ -9,6 +9,27 @@
     {% endif %}
 {% endblock %}
 
+{% block javascript %}
+    <script>
+        var addToCart;
+        $(document).ready(function(){
+            addToCart = function (id){
+                $.ajax({
+                url:'{% url "cart:add" %}',
+                data: {
+                    'id': id
+                },
+                success: function(){
+                    $("#cart").load(" #cart");
+                    alert('Товар добавлен в корзину.');
+                }
+                });
+            }
+        });
+    </script>
+{% endblock %}
+
+
 {% block content %}
     <div class="container-fluid">
         <div class="row">
@@ -31,21 +52,32 @@
             <div class="col-sm-10">
                 <div class="d-flex flex-wrap">
                     {% for product in products %}
-                    <div class="product-box shadow-sm">
-                        <a href="{{ product.get_absolute_url }}">
-                            <div class="image-box">
-                                <img class="product-image" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "images/no-image.png" %}{% endif %}" alt="product image">
+                        {% if product.available %}
+                            <div class="product-box shadow-sm">
+                                <a href="{{ product.get_absolute_url }}">
+                                    <div class="image-box">
+                                        <img class="product-image" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "images/no-image.png" %}{% endif %}" alt="product image">
+                                    </div>
+                                </a>
+                                <div class="product-box-body">
+                                    <div class="text-box">
+                                        <p>{{ product.name }}</p>
+                                    </div>
+
+                                    <div class="price-box">
+                                        <p>{{ product.price }} руб.</p>
+                                    </div>
+
+                                    <div class="button-box">
+                                        {% if product.stock > 0 %}
+                                            <input value="Добавить в корзину" type="button" class="btn btn-primary" onclick="addToCart('{{ product.pk }}')" style="width: 300px">
+                                        {% else %}
+                                            <button type="button" class="btn btn-primary" disabled style="width: 300px">Нет в наличии</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
-                        </a>
-                        <div class="product-box-body">
-                            <div class="text-box">
-                                <p>{{ product.name }}</p>
-                            </div>
-                            <div class="price-box">
-                                <p>{{ product.price }} руб.</p>
-                            </div>
-                        </div>
-                    </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>

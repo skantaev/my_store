@@ -1,22 +1,29 @@
-from django.shortcuts import render, redirect
-from cart_app.cart import Cart
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
+from django.http import HttpResponse, JsonResponse
+
+from cart_app.cart import Cart, ItemDoesNotExist
 from my_store_app.models import Product
 
 # Create your views here.
 
 
-@require_POST
-def add_product(request, product_pk):
+def add_product(request):
+    product_id = request.GET.get('id', None)
+    product = get_object_or_404(Product, pk=product_id)
+
+    if not product.available:
+        return HttpResponse(status=403)
+
     cart = Cart(request)
-    product = Product.objects.get(pk=product_pk)
     cart.add(product)
 
+    return HttpResponse(status=200)
 
-@require_POST
-def remove_product(request, product_pk):
+
+def remove_product(request):
     cart = Cart(request)
-    product = Product.objects.get(pk=product_pk)
+    product = get_object_or_404(Product, pk=product_pk)
     cart.remove(product)
 
 

@@ -17,10 +17,10 @@ def index(request):
     return HttpResponse(status=405)
 
 
-def view_category(request, category_pk):
+def view_category(request, category_id):
     if request.method == 'GET':
         categories = Category.objects.all()
-        category = get_object_or_404(Category, pk=category_pk)
+        category = get_object_or_404(Category, pk=category_id)
         products = Product.objects.filter(available=True, category=category)
         context = {'categories': categories,
                    'products': products,
@@ -31,10 +31,10 @@ def view_category(request, category_pk):
     return HttpResponse(status=405)
 
 
-def view_product(request, product_pk):
+def view_product(request, product_id):
     if request.method == 'GET':
         categories = Category.objects.all()
-        product = get_object_or_404(Product, pk=product_pk)
+        product = get_object_or_404(Product, pk=product_id)
         reviews = Review.objects.filter(visible=True, product=product)
         context = {'categories': categories,
                    'product': product,

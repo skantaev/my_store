@@ -1,0 +1,48 @@
+{% extends 'my_store_app/_base.html' %}
+{% load cart_tags %}
+{% load staticfiles %}
+
+{% block title %}
+    Корзина товаров
+{% endblock %}
+
+{% block content %}
+    {% if cart|length > 0 %}
+        <h1>Корзина товаров</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Изображение</th>
+                    <th>Товар</th>
+                    <th>Количество</th>
+                    <th>Цена за штуку</th>
+                    <th>Цена</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                    {% with product=item.product %}
+                        <tr>
+                            <td>
+                                <a href="{{ product.get_absolute_url }}">
+                                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "images/no-image.png" %}{% endif %}" alt="product image">
+                                </a>
+                            </td>
+                            <td> {{ product.name }} </td>
+                            <td> {{ item.quantity }} </td>
+                            <td> {{ item.price }} руб.</td>
+                            <td> {{ item.quantity|multiply:product.price }} руб.</td>
+                        </tr>
+                    {% endwith %}
+                {% endfor %}
+                <tr>
+                    <td>Итого</td>
+                    <td colspan="3"></td>
+                    <td> {{ cart.get_total_price }} руб.</td>
+                </tr>
+            </tbody>
+        </table>
+    {% else %}
+        <h1>Ваша корзина пуста</h1>
+    {% endif %}
+{% endblock %}

@@ -5,13 +5,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Title{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'my_store_app/styles.css' %}">
+    <title>{% block title %}{% endblock %}</title>
     <!-- Bootstrap links -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <!-- My links -->
+    <link rel="stylesheet" href="{% static 'my_store_app/styles.css' %}">
+    {% block javascript %}{% endblock %}
 </head>
 <body>
     <div class="jumbotron text-center" style="margin-bottom:0">
@@ -31,7 +33,9 @@
                     <a class="nav-link" href="{% url 'store:index' %}">Главная</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Other</a>
+                    <div id="cart">
+                        <a class="nav-link" href="{% url 'cart:view' %}">{% if cart|length > 0 %}Корзина ({{ cart|length }}) на {{ cart.get_total_price }} руб.{% else %}Корзина пуста{% endif %}</a>
+                    </div>
                 </li>
             </ul>
         </div>

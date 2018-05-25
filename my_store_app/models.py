@@ -40,7 +40,7 @@ class Product(models.Model):
     number_of_reviews = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ['-date_updated']
+        ordering = ['-date_created']
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
 
