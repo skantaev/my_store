@@ -13,9 +13,10 @@
     <script>
         var addToCart;
         $(document).ready(function(){
-            addToCart = function (id){
+            addToCart = function(id){
                 $.ajax({
                 url:'{% url "cart:add" %}',
+                cache: false,
                 data: {
                     'id': id
                 },

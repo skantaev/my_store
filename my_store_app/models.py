@@ -8,7 +8,7 @@ from django.urls import reverse
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=150)
+    name = models.CharField(max_length=150, verbose_name='Название')
 
     class Meta:
         ordering = ['name']
@@ -29,11 +29,11 @@ class Product(models.Model):
                                       related_name='category',
                                       verbose_name='Категория',
                                       )
-    description = models.TextField(max_length=3000, blank=True)
+    description = models.TextField(max_length=3000, blank=True, verbose_name='Описание')
     image = models.ImageField(upload_to='my_store_app/images/products/%Y/%m/%d/', null=True, blank=True,
                               verbose_name='Изображение')
     price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name="Цена")
-    stock = models.PositiveIntegerField()
+    stock = models.PositiveIntegerField(verbose_name='В наличии')
     available = models.BooleanField(default=True, verbose_name='Доступен')
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)

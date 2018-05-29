@@ -5,6 +5,28 @@
     {{ product.name }}
 {% endblock %}
 
+{% block javascript %}
+    <script>
+        var addToCart;
+        $(document).ready(function(){
+            addToCart = function(id){
+                $.ajax({
+                url:'{% url "cart:add" %}',
+                cache: false,
+                data: {
+                    'id': id,
+                    'quantity': $("#quantity").val()
+                },
+                success: function(){
+                    $("#cart").load(" #cart");
+                    alert('Товар добавлен в корзину.');
+                }
+                });
+            }
+        });
+    </script>
+{% endblock %}
+
 {% block content %}
     <div class="container-fluid">
         <div class="row">
@@ -13,9 +35,19 @@
             </div>
             <div class="col-sm-8">
                 <h1> {{ product.name }} </h1>
-                <p> {{product.price }} руб.</p>
+                <p>
+                    Категория:
+                    {% for category in product.category.all %}
+                        <a href="{{ category.get_absolute_url }}"><span class="badge badge-pill badge-primary">{{ category.name }}</span></a>
+                    {% endfor %}
+                </p>
+                <p> Цена: {{product.price }} руб.</p>
                 <span>
-                    {{ product.description | linebreaks }}
+                    <input id="quantity" type="number" name="quantity" value="1" min="1" max="99">
+                    <input type="button" class="btn btn-primary" name="add" value="Добавить в корзину" onclick="addToCart('{{ product.pk }}')">
+                </span>
+                <span>
+                    {{ product.description|linebreaks }}
                 </span>
             </div>
         </div>

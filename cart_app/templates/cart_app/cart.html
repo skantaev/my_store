@@ -6,6 +6,41 @@
     Корзина товаров
 {% endblock %}
 
+{% block javascript %}
+    <script>
+        var setQuantity;
+        var removeProduct;
+        $(document).ready(function(){
+            setQuantity = function(product_id, val){
+                $.ajax({
+                url:'{% url "cart:set" %}',
+                cache: false,
+                data: {
+                    'id': product_id,
+                    'quantity': val
+                    },
+                success: function(){
+                    location.reload();
+                }
+                });
+            }
+
+            removeProduct = function(product_id){
+                $.ajax({
+                url:'{% url "cart:remove" %}',
+                cache: false,
+                data: {
+                    'id': product_id,
+                    },
+                success: function(){
+                    location.reload();
+                }
+                });
+            }
+        });
+    </script>
+{% endblock %}
+
 {% block content %}
     {% if cart|length > 0 %}
         <h1>Корзина товаров</h1>
@@ -15,8 +50,8 @@
                     <th>Изображение</th>
                     <th>Товар</th>
                     <th>Количество</th>
-                    <th>Цена за штуку</th>
                     <th>Цена</th>
+                    <th>Сумма</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,16 +64,27 @@
                                 </a>
                             </td>
                             <td> {{ product.name }} </td>
-                            <td> {{ item.quantity }} </td>
+                            <td>
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="99" onchange="setQuantity('{{ product.pk }}', this.value)">
+                                <input type="button" class="btn btn-primary" name="remove" value="Удалить" onclick="removeProduct('{{ product.pk }}')">
+                            </td>
                             <td> {{ item.price }} руб.</td>
-                            <td> {{ item.quantity|multiply:product.price }} руб.</td>
+                            <td>
+                                <div id="sum{{ product.pk }}">
+                                    {{ item.quantity|multiply:product.price }} руб.
+                                </div>
+                            </td>
                         </tr>
                     {% endwith %}
                 {% endfor %}
                 <tr>
                     <td>Итого</td>
                     <td colspan="3"></td>
-                    <td> {{ cart.get_total_price }} руб.</td>
+                    <td>
+                        <div id="totalprice">
+                            {{ cart.get_total_price }} руб.
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>

@@ -36,21 +36,20 @@ class Cart(object):
         self.session[settings.CART_SESSION_ID] = self._cart
         self.session.modified = True
 
-    def add(self, product):
+    def add(self, product, quantity=1):
         """
-        Добавление товара в корзину. Ключу словаря cart в виде первичного ключа товара соответствует число товаров в
-        корзине (при добавлении оно автоматически равно 1).
+        Добавление товара в корзину.
         """
         product_id = str(product.pk)
+
         if product_id not in self._cart:
-            self._cart[product_id] = {'quantity': 1, 'price': str(product.price)}
+            self._cart[product_id] = {'quantity': quantity, 'price': str(product.price)}
         else:
-            self._cart[product_id]['quantity'] += 1
+            self._cart[product_id]['quantity'] += quantity
 
         self.__save()
 
-    def remove(self, product):
-        product_id = str(product.pk)
+    def remove(self, product_id):
         if product_id in self._cart:
             del self._cart[product_id]
         else:
@@ -58,12 +57,11 @@ class Cart(object):
 
         self.__save()
 
-    def set_quantity(self, product, quantity):
+    def set_quantity(self, product_id, quantity):
         """
         Изменение количества выбранного товара в корзине.
         """
-        product_id = str(product.pk)
-        if product.pk in self._cart:
+        if product_id in self._cart:
             self._cart[product_id]['quantity'] = quantity
         else:
             raise ItemDoesNotExist
