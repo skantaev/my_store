@@ -1,17 +1,24 @@
-from django import forms
+from django.forms import ModelForm, Textarea, TextInput
 from my_store_app.models import Review, Order
 
 
-class ReviewForm(forms.ModelForm):
+class ReviewForm(ModelForm):
     class Meta:
         model = Review
         fields = [
             'title',
             'text',
         ]
+        widgets = {
+            'title': TextInput(attrs={'class': 'form-control'}),
+            'text': Textarea(attrs={'rows': 5,
+                                    'class': 'form-control',
+                                    }),
+
+        }
 
 
-class OrderForm(forms.ModelForm):
+class OrderForm(ModelForm):
     class Meta:
         model = Order
         fields = [

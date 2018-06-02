@@ -71,3 +71,9 @@ li a:hover {
     float: none;
     margin-right: 0;
 }
+
+.pagination {
+   display:block;
+   text-align: center;
+   margin: 0 auto;
+}

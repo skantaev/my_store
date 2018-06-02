@@ -46,8 +46,58 @@
                     <input id="quantity" type="number" name="quantity" value="1" min="1" max="99">
                     <input type="button" class="btn btn-primary" name="add" value="Добавить в корзину" onclick="addToCart('{{ product.pk }}')">
                 </span>
-                <span>
-                    {{ product.description|linebreaks }}
+                <p>
+                    {% if product.description %}
+                        Описание: {{ product.description|linebreaks }}
+                    {% else %}
+                        Описание отсутствует
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="add-review-box">
+                    <h3 align="center">Опубликовать отзыв о товаре</h3>
+                    <form action="{% url 'store:product' product.pk %}" method="post">
+                        {% csrf_token %}
+                        {{ form }}
+                        <input class="btn" type="submit" value="Опубликовать">
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 align="center">{% if reviews %}Отзывы{% else %}Отзывов пока нет{% endif %}</h3>
+                {% for review in reviews %}
+                    <div class="comment-box">
+                        <p>{{ review.user.username }}</p>
+                        <p>{{ review.title }}</p>
+                        <p>{{ review.text }}</p>
+                        <p>{{ review.date_created }}</p>
+                        <p>{{ review.date_updated }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="pagination">
+                <span class="step-links">
+                    {% if reviews.has_previous %}
+                        <a href="?page=1">&laquo; первая</a>
+                        <a href="?page={{ reviews.previous_page_number }}">предыдущая</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Страница {{ reviews.number }} из {{ reviews.paginator.num_pages }}
+                    </span>
+
+                    {% if reviews.has_next %}
+                        <a href="?page={{ reviews.next_page_number }}">следующая</a>
+                        <a href="?page={{ reviews.paginator.num_pages }}">последняя &raquo;</a>
+                    {% endif %}
                 </span>
             </div>
         </div>

@@ -4,7 +4,14 @@ from my_store_app.models import Category, Product, Order
 # Register your models here.
 
 
+class CategoryProductInline(admin.TabularInline):
+    model = Product.category.through
+
+
 class CategoryAdmin(admin.ModelAdmin):
+    inlines = [
+        CategoryProductInline,
+    ]
     list_display = ('id', 'name')
 
 

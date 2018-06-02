@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
+
 # Create your models here.
 
 
@@ -35,9 +36,8 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name="Цена")
     stock = models.PositiveIntegerField(verbose_name='В наличии')
     available = models.BooleanField(default=True, verbose_name='Доступен')
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
-    number_of_reviews = models.PositiveIntegerField(default=0)
+    date_created = models.DateTimeField(auto_now_add=True, verbose_name='Создано')
+    date_updated = models.DateTimeField(auto_now=True, verbose_name='Обновлено')
 
     class Meta:
         ordering = ['-date_created']
@@ -68,13 +68,20 @@ def get_sentinel_user():
 
 
 class Review(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET(get_sentinel_user))
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.SET(get_sentinel_user),
+                             verbose_name='Пользователь',
+                             )
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
     title = models.CharField(max_length=100, verbose_name='Заголовок')
     text = models.CharField(max_length=3000, verbose_name='Текст')
-    visible = models.BooleanField(default=True)
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
+    date_created = models.DateTimeField(auto_now_add=True, verbose_name='Создано')
+    date_updated = models.DateTimeField(auto_now=True,  verbose_name='Обновлено')
+
+    class Meta:
+        ordering = ['date_created']
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
 
 
 class OrderItem(models.Model):
