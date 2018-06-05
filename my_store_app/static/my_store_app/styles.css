@@ -23,7 +23,7 @@ li a:hover {
 
 .product-box {
     width: 300px;
-    height: 450px;
+    height: 480px;
     margin: 20px;
     border-style: solid;
     border-width: thin;
@@ -72,8 +72,3 @@ li a:hover {
     margin-right: 0;
 }
 
-.pagination {
-   display:block;
-   text-align: center;
-   margin: 0 auto;
-}

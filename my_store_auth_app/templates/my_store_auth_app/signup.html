@@ -1,0 +1,16 @@
+{% extends 'my_store_app/_base.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row"></div>
+            <div class="col">
+                <h3>Страница регистрации</h3>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        {{ form }}
+                    </form>
+            </div>
+    </div>
+{% endblock %}

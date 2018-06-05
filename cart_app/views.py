@@ -68,8 +68,3 @@ def remove_product(request):
 def view_cart(request):
     cart = Cart(request)
     return render(request, 'cart_app/cart.html', {'cart': cart})
-
-
-@require_POST
-def make_order(request):
-    pass

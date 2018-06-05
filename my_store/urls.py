@@ -20,11 +20,13 @@ from django.contrib.staticfiles.urls import static
 
 from my_store_app import urls as my_store_urls
 from cart_app import urls as cart_urls
+from my_store_auth_app import urls as auth_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(my_store_urls, namespace='store')),
     path('cart/', include(cart_urls, namespace='cart')),
+    path('auth/', include(auth_urls, namespace='auth')),
 ]
 
 if settings.DEBUG:
