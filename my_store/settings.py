@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # my apps:
     'my_store_app',
-    'my_store_auth_app',
     'cart_app',
 ]
 
@@ -103,11 +102,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-# Authorization
-AUTH_USER_MODEL = 'my_store_auth_app.CustomUser'
-LOGIN_URL = '/auth/login'
-LOGIN_REDIRECT_URL = ''
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',

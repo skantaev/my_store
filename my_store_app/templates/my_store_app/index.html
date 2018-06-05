@@ -67,7 +67,6 @@
 
                                     <div class="price-box">
                                         <p>{{ product.price }} руб.</p>
-                                        <p>Отзывы: {{ product.review_set.count }}</p>
                                     </div>
 
                                     <div class="button-box">
@@ -83,22 +82,26 @@
                     {% endfor %}
                 </div>
 
+                <br>
+
                 <div class="pagination">
-                    <span class="step-links">
-                        {% if products.has_previous %}
-                            <a href="?page=1">&laquo; первая</a>
-                            <a href="?page={{ products.previous_page_number }}">предыдущая</a>
-                        {% endif %}
+                    <ul class="pagination">
+                          {% if products.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+                            {% if products.previous_page_number != 1 %}
+                                <li class="page-item"><a class="page-link" href="?page={{ products.previous_page_number }}">{{ products.previous_page_number }}</a></li>
+                            {% endif %}
+                          {% endif %}
 
-                        <span class="current">
-                            Страница {{ products.number }} из {{ products.paginator.num_pages }}
-                        </span>
+                            <li class="page-item active"><a class="page-link" href="#">{{ products.number }}</a></li>
 
-                        {% if products.has_next %}
-                            <a href="?page={{ products.next_page_number }}">следующая</a>
-                            <a href="?page={{ products.paginator.num_pages }}">последняя &raquo;</a>
-                        {% endif %}
-                    </span>
+                          {% if products.has_next %}
+                            {% if products.next_page_number != products.paginator.num_pages %}
+                                <li class="page-item"><a class="page-link" href="?page={{ products.next_page_number }}">{{ products.next_page_number }}</a></li>
+                            {% endif %}
+                            <li class="page-item"><a class="page-link" href="?page={{ products.paginator.num_pages }}">{{ products.paginator.num_pages }}</a></li>
+                          {% endif %}
+                    </ul>
                 </div>
             </div>
         </div>

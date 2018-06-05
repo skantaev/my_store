@@ -1,8 +1,7 @@
 from django.db import models
 from django.utils import timezone
-from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.core.validators import RegexValidator
 
 
 # Create your models here.
@@ -59,31 +58,6 @@ def get_sentinel_product():
     return Product.objects.get_or_create(name='deleted')[0]
 
 
-def get_sentinel_user():
-    """
-    Возвращает объект класса CustomUser (или создает и возвращает, если его нет) для замещения удаленных объектов этого
-    класса.
-    """
-    return get_user_model().objects.get_or_create(username='deleted')[0]
-
-
-class Review(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.SET(get_sentinel_user),
-                             verbose_name='Пользователь',
-                             )
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
-    title = models.CharField(max_length=100, verbose_name='Заголовок')
-    text = models.CharField(max_length=3000, verbose_name='Текст')
-    date_created = models.DateTimeField(auto_now_add=True, verbose_name='Создано')
-    date_updated = models.DateTimeField(auto_now=True,  verbose_name='Обновлено')
-
-    class Meta:
-        ordering = ['date_created']
-        verbose_name = 'Отзыв'
-        verbose_name_plural = 'Отзывы'
-
-
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET(get_sentinel_product))
     quantity = models.PositiveIntegerField()
@@ -101,6 +75,13 @@ class OrderUnreceivedManager(models.Manager):
 
 class Order(models.Model):
     items = models.ForeignKey(OrderItem, related_name='items', on_delete=models.PROTECT)
+
+    customer_name = models.CharField(max_length=100)
+
+    phone_regex = RegexValidator(regex=r'^(?:(?:\+7)|8)\d{10}$', message="Номер должен быть в формате \"+7ХХХХХХХХХХ\" "
+                                                                         "или \"8ХХХХХХХХХХ\"")
+    customer_phonenumber = models.CharField(validators=[phone_regex], max_length=15, blank=True)
+
     pickup = models.BooleanField()
     delivery_address = models.CharField(max_length=150, null=True)
     comment = models.CharField(max_length=500, blank=True)
