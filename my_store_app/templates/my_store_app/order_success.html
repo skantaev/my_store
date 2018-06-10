@@ -1,0 +1,12 @@
+{% extends 'my_store_app/_base.html' %}
+
+{% block title %}
+    Заказ принят
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3>Заказ принят</h3>
+    <p>Благодарим за выполненный заказ! Номер заказа: {{ order.pk }}</p>
+    </div>
+{% endblock %}

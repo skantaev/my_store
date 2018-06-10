@@ -1,5 +1,6 @@
 from django.contrib import admin
-from my_store_app.models import Category, Product, Order
+
+from .models import Category, Product, Order, OrderItem
 
 # Register your models here.
 
@@ -21,9 +22,16 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ('price', 'stock', 'available')
 
 
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+
+
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'pickup', 'delivery_address', 'comment', 'received', 'date_created', 'date_received')
-    list_filter = ('received', 'date_created', 'date_received')
+    inlines = [
+        OrderItemInline,
+    ]
+    list_display = ('id', 'pickup', 'delivery_address', 'comment', 'received', 'date_created')
+    list_filter = ('received', 'date_created')
     list_editable = ('received', )
 
 

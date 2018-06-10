@@ -41,9 +41,10 @@
                         <a href="{{ category.get_absolute_url }}"><span class="badge badge-pill badge-primary">{{ category.name }}</span></a>
                     {% endfor %}
                 </p>
-                <p> Цена: {{product.price }} руб.</p>
+                <p> Цена: {{ product.price }} руб.</p>
+                <p> В наличии: {{ product.stock }}</p>
                 <span>
-                    <input id="quantity" type="number" name="quantity" value="1" min="1" max="99">
+                    <input id="quantity" type="number" name="quantity" value="1" min="1" max="{{ product.stock }}">
                     <input type="button" class="btn btn-primary" name="add" value="Добавить в корзину" onclick="addToCart('{{ product.pk }}')">
                 </span>
                 <p>

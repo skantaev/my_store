@@ -17,7 +17,8 @@
                 cache: false,
                 data: {
                     'id': product_id,
-                    'quantity': val
+                    'quantity': val,
+                    'set_qnt': true
                     },
                 success: function(){
                     location.reload();
@@ -42,53 +43,64 @@
 {% endblock %}
 
 {% block content %}
-    {% if cart|length > 0 %}
-        <h1>Корзина товаров</h1>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Изображение</th>
-                    <th>Товар</th>
-                    <th>Количество</th>
-                    <th>Цена</th>
-                    <th>Сумма</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in cart %}
-                    {% with product=item.product %}
-                        <tr>
-                            <td>
-                                <a href="{{ product.get_absolute_url }}">
-                                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "images/no-image.png" %}{% endif %}" alt="product image">
-                                </a>
-                            </td>
-                            <td> {{ product.name }} </td>
-                            <td>
-                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="99" onchange="setQuantity('{{ product.pk }}', this.value)">
-                                <input type="button" class="btn btn-primary" name="remove" value="Удалить" onclick="removeProduct('{{ product.pk }}')">
-                            </td>
-                            <td> {{ item.price }} руб.</td>
-                            <td>
-                                <div id="sum{{ product.pk }}">
-                                    {{ item.quantity|multiply:product.price }} руб.
-                                </div>
-                            </td>
-                        </tr>
-                    {% endwith %}
-                {% endfor %}
-                <tr>
-                    <td>Итого</td>
-                    <td colspan="3"></td>
-                    <td>
-                        <div id="totalprice">
-                            {{ cart.get_total_price }} руб.
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    {% else %}
-        <h1>Ваша корзина пуста</h1>
-    {% endif %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                {% if cart|length > 0 %}
+                    <h1>Корзина товаров</h1>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Изображение</th>
+                                <th>Товар</th>
+                                <th>Количество</th>
+                                <th>Цена</th>
+                                <th>Сумма</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart %}
+                                {% with product=item.product %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ product.get_absolute_url }}">
+                                                <img class="img-fluid" style="max-width: 200px; max-height: 300px;" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "images/no-image.png" %}{% endif %}" alt="product image">
+                                            </a>
+                                        </td>
+                                        <td> {{ product.name }} </td>
+                                        <td>
+                                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" onchange="setQuantity('{{ product.pk }}', this.value)">
+                                            <input type="button" class="btn btn-danger" name="remove" value="Удалить" onclick="removeProduct('{{ product.pk }}')">
+                                        </td>
+                                        <td> {{ item.price }} руб.</td>
+                                        <td>
+                                                {{ item.quantity|multiply:product.price }} руб.
+                                        </td>
+                                    </tr>
+                                {% endwith %}
+                            {% endfor %}
+                            <tr>
+                                <td><b>Итого</b></td>
+                                <td colspan="3"></td>
+                                <td>
+                                    <div id="totalprice">
+                                        {{ cart.get_total_price }} руб.
+                                    </div>
+                                    <div>
+                                        <br>
+                                        <a href="{% url 'store:order' %}">
+                                             <input type="button" class="btn btn-primary" value="Оформить заказ">
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                {% else %}
+                    <h1>Ваша корзина пуста</h1>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

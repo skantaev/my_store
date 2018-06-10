@@ -1,0 +1,54 @@
+{% extends 'my_store_app/_base.html' %}
+{% load cart_tags %}
+
+{% block title %}
+    Оформление заказа
+{% endblock %}
+
+{% block javascript %}
+    <script>
+    $(document).ready(function(){
+        if (document.getElementById("id_pickup").checked) {
+          $("#delivery_address").hide();
+        }
+
+        $("#id_pickup").click(function() {
+          $("#delivery_address").toggle();
+        });
+    });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Оформление заказа</h1>
+        <div class="row">
+            <div class="col-sm-4">
+                <form action="{% url 'store:order' %}" method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div id="{{ field.html_name }}">
+                            {{ field.label_tag }} {{ field }}
+                            {{ field.errors }}
+                            <br>
+                        </div>
+                    {% endfor %}
+                    <input class="btn btn-primary" type="submit" value="Отправить">
+                </form>
+            </div>
+
+            <div class="col-sm-8">
+                <h3 align="center">Ваш заказ:</h3>
+                <ul>
+                    {% for item in cart %}
+                        <li>
+                            {{ item.product.name }} ({{ item.quantity }} шт.) – {{ item.quantity|multiply:item.product.price }} руб.
+                        </li>
+                    {% endfor %}
+
+                </ul>
+                <p align="right"><b>Итого: {{ cart.get_total_price }} руб.</b></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -4,7 +4,7 @@ li a {
     padding: 10px;
 }
 
-li a:hover {
+.selected a:hover {
     background-color: #e6f0ff;
     text-decoration: none;
 }
@@ -72,3 +72,9 @@ li a:hover {
     margin-right: 0;
 }
 
+.errorlist {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    color: red;
+}
