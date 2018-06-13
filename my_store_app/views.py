@@ -75,7 +75,8 @@ def make_order(request):
             cart.clear()
 
             # Отправка сообщения асинхронно на электронную почту
-            send_order_email.delay(order.pk)
+            if form.cleaned_data['email']:
+                send_order_email.delay(order.pk)
 
             return render(request, 'my_store_app/order_success.html', {'order': order})
 
