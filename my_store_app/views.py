@@ -6,6 +6,7 @@ from django.views.decorators.http import require_http_methods
 from .models import Category, Product, OrderItem
 from .forms import OrderForm
 from cart_app.cart import Cart
+from .tasks import send_order_email
 
 # Create your views here.
 
@@ -72,6 +73,9 @@ def make_order(request):
                 OrderItem.objects.create(order=order, product=product, purchase_price=purchase_price, quantity=quantity)
 
             cart.clear()
+
+            # Отправка сообщения асинхронно на электронную почту
+            send_order_email.delay(order.pk)
 
             return render(request, 'my_store_app/order_success.html', {'order': order})
 

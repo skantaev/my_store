@@ -110,7 +110,7 @@ AUTHENTICATION_BACKENDS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
@@ -132,3 +132,11 @@ MEDIA_URL = '/media/'
 
 # Cart settings
 CART_SESSION_ID = 'cart'
+
+# Celery
+BROKER_URL = 'amqp://localhost'
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+MANAGERS = []
+

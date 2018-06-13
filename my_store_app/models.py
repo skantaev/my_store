@@ -62,8 +62,9 @@ class Order(models.Model):
 
     # Валидатор для номера телефона
     phone_regex = RegexValidator(regex=r'^(?:(?:\+7)|8)\d{10}$', message="Номер должен быть в формате \"+7ХХХХХХХХХХ\" "
-                                                                         "или \"8ХХХХХХХХХХ\"")
+                                                                         "или \"8ХХХХХХХХХХ\".")
     phone_number = models.CharField(validators=[phone_regex], max_length=15, verbose_name='Номер телефона')
+    email = models.EmailField(blank=True, verbose_name='Электронная почта')
 
     pickup = models.BooleanField(default=False, verbose_name='Самовывоз')
     delivery_address = models.CharField(max_length=150, blank=True, verbose_name='Адрес доставки')
@@ -79,9 +80,15 @@ class Order(models.Model):
     def __str__(self):
         return 'Заказ №%s' % self.pk
 
+    def get_full_cost(self):
+        return sum(item.get_cost() for item in self.items.all())
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE, null=True, verbose_name='Заказ')
     product = models.ForeignKey(Product, on_delete=models.SET(get_sentinel_product), verbose_name='Товар')
     quantity = models.PositiveIntegerField(verbose_name='Количество')
     purchase_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Цена покупки')
+
+    def get_cost(self):
+        return self.purchase_price * self.quantity
